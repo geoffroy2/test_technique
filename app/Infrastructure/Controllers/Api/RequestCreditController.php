@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Infrastructure\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateRequestCredit;
@@ -73,7 +73,7 @@ class RequestCreditController extends Controller
         $amountRequested = $createRequestCredit->amount_requested;
 
         if ((($amountRequested < 5000 || $amountRequested > 100000) && $createRequestCredit->code == 'picoCredit' ) ||
-        (($amountRequested < 100001 || $amountRequested > 300000) && $createRequestCredit->code == 'nanoCredit' ) ||
+            (($amountRequested < 100001 || $amountRequested > 300000) && $createRequestCredit->code == 'nanoCredit' ) ||
             (($amountRequested < 300001 || $amountRequested > 500000) && $createRequestCredit->code == 'microCredit' )
         ) {
 
