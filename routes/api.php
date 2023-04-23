@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Infrastructure\Controllers\Api\RequestCreditsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RequestCreditController ;
@@ -16,10 +17,14 @@ use App\Http\Controllers\Api\RequestCreditController ;
 */
 
 // crée une demande
-Route::post("requestCredits/create",[ RequestCreditController::class ,'store']);
+//Route::post("requestCredits/create",[ RequestCreditController::class ,'store']);
+
+Route::post("requestCredits/create",[ RequestCreditsController::class ,'store']);
 
 //liste des demandes
-Route::get("requestCredits",[ RequestCreditController::class ,'findAll'])->middleware('auth.jwt');
+//Route::get("requestCredits",[ RequestCreditController::class ,'findAll'])->middleware('auth.jwt');
+
+Route::get('requestCredits',[RequestCreditsController::class,'findAll']);
 
 // register and login
 Route::group([
