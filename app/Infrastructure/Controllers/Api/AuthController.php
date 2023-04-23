@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Infrastructure\Controllers\Api;
 
+use App\Domain\Services\AuthService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,13 +11,11 @@ use Illuminate\Support\Facades\Validator ;
 
 class AuthController extends Controller
 {
-    /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+
+    private $authService ;
+    public function __construct(AuthService $authService) {
+        $this->authService = $authService ;
+       // $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
     /**
      * Get a JWT via given credentials.
@@ -24,18 +23,7 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request){
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
-        $credentials = $request->only('email', 'password');
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        $token =  $this->authService->login($request) ;
         return $this->createNewToken($token);
     }
     /**
