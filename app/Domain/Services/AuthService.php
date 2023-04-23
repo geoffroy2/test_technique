@@ -1,8 +1,9 @@
 <?php
 namespace App\Domain\Services ;
 
+use App\Domain\Exceptions\CustomException;
 use App\Infrastructure\Persistence\Eloquent\AuthRepository;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator ;
 use Illuminate\Http\Request ;
 class  AuthService {
 
@@ -29,5 +30,20 @@ class  AuthService {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         return $token;
+    }
+
+
+    public function register(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|between:2,100',
+            'email' => 'required|string|email|max:100|unique:users',
+            'password' => 'required|string',
+        ]);
+        if($validator->fails()){
+            throw new CustomException($validator->errors()->toJson(),400);
+        }
+        $this->authRepository->validator = $validator ;
+        $user = $this->authRepository->register($request);
+        return $user ;
     }
 }

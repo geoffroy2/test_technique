@@ -1,6 +1,7 @@
 <?php
 namespace App\Domain\Interfaces;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator ;
 
 interface AuthRepositoryInterface
 {
