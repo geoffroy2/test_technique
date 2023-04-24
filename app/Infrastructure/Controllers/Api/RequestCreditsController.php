@@ -3,6 +3,8 @@
 namespace App\Infrastructure\Controllers\Api;
 
 use App\Application\Requests\CreateRequestCredits;
+use App\Domain\Dto\CreateRequestCreditDto;
+use App\Domain\Dto\RequestCreditDTO;
 use App\Domain\Services\RequestCreditService;
 use App\Http\Controllers\Controller;
 class RequestCreditsController extends Controller
@@ -14,17 +16,32 @@ class RequestCreditsController extends Controller
     }
     public function store(CreateRequestCredits $request)
     {
-        $requestCredit = $this->requestCreditService->create($request);
-        $message = $this->requestCreditService->createMessage($requestCredit);
+        $createRequestCreditDTO = new CreateRequestCreditDto(
+            $request->input('phoneNumber'),
+            $request->input('amount_requested'),
+            $request->input('code'),
+        );
+        $requestCredit = $this->requestCreditService->create($createRequestCreditDTO);
         return response()->json([
             'status_code' => 201,
-            'message' => $message,
+            'message' => $requestCredit,
         ]);
     }
     public function findAll() {
+
+        $requestCredits = $this->requestCreditService->getAllCreditsRequest();
+
+        $requestCreditDTOs = collect($requestCredits)->map(function($requestCredit) {
+            return RequestCreditDTO::fromModel($requestCredit);
+        })->all();
+
         return response()->json([
             'status_code' => 200,
-            'data'=> $this->requestCreditService->getAllCreditsRequest()
-        ]) ;
+            'data' => $requestCreditDTOs
+        ]);
+//        return response()->json([
+//            'status_code' => 200,
+//            'data'=> $this->requestCreditService->getAllCreditsRequest()
+//        ]) ;
     }
 }

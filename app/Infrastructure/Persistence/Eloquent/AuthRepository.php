@@ -1,6 +1,7 @@
 <?php
 namespace App\Infrastructure\Persistence\Eloquent;
 
+use App\Domain\Dto\UserDTO;
 use \App\Domain\Interfaces\AuthRepositoryInterface ;
 use App\Domain\Model\User;
 use Illuminate\Http\Request ;
@@ -16,17 +17,19 @@ class AuthRepository implements AuthRepositoryInterface {
 
     public function register(Request $request)
     {
-
-        $user = User::create(array_merge(
-            $this->validator->validated(),
-            ['password' => bcrypt($request->password)]
-        ));
+        $registrationDTO = UserDTO::fromRegisterRequest($request->all());
+        $user = User::create([
+            'name' => $registrationDTO->name,
+            'email' => $registrationDTO->email,
+            'password' => bcrypt($registrationDTO->password)
+        ]);
 
         return $user;
     }
 
     public function login(array $request)
     {
-       return  auth()->attempt($request) ;
+        $userLoginDto =  UserDTO::fromLoginRequest($request);
+       return  auth()->attempt($userLoginDto) ;
     }
 }
