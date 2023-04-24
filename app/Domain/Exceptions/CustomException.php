@@ -23,6 +23,6 @@ class CustomException extends \Exception implements Throwable
             'status_code' => $this->code,
             'error' => true,
             'message' => $this->message,
-        ]);
+        ],$this->code);
     }
 }

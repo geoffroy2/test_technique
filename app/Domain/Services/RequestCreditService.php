@@ -50,7 +50,7 @@ class  RequestCreditService {
 
             return $requestCredit;
         } catch (InvalidProductCodeException $e) {
-            throw new CustomException('Code produit non valide', 404);
+            throw new CustomException('Code produit non valide', 400);
         } catch (\Throwable $e) {
             throw new CustomException('Unexpected error occurred', 500);
         }

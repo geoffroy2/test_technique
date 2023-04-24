@@ -22,12 +22,13 @@ class  AuthService {
         ]);
         $credentials = $request->only('email', 'password');
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+          //  return response()->json($validator->errors(), 422);
+            throw new CustomException($validator->errors(),422)  ;
         }
 
         $token = $this->authRepository->login($credentials);
         if (! $token) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            throw new CustomException('Unauthorized',401) ;
         }
         return $token;
     }
